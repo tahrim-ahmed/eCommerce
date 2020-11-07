@@ -117,7 +117,7 @@
 import {Vue, Component} from 'vue-property-decorator';
 import AddCategory from "components/admin/AddCategory.vue";
 import {Loading} from "quasar";
-import AddProducts from "components/admin/AddProducts.vue";
+import AddProducts from "components/admin/AddProduct.vue";
 
 @Component({
 	components: {AddProducts, AddCategory}

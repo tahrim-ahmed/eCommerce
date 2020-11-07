@@ -1,6 +1,13 @@
 <template>
 	<q-page>
-		<q-table title="Product Categories" :data="rows" :columns="columns" row-key="_id.$oid" color="amber">
+		<q-table title="Product Categories" :data="rows" :columns="columns" row-key="_id.$oid" color="amber" :filter="filter">
+			<template v-slot:top-right>
+				<q-input dense debounce="300" v-model="filter" placeholder="Search">
+					<template v-slot:append>
+						<q-icon name="search"/>
+					</template>
+				</q-input>
+			</template>
 			<template v-slot:body-cell-action="props">
 				<q-td :props="props">
 					<q-btn icon="edit" @click="$root.$emit('showEditCategory', props.row._id)"/>
@@ -36,14 +43,16 @@ import {Collections} from "src/interfaces/util";
 import {Loading} from "quasar";
 import EditCategory from "components/admin/EditCategory.vue";
 import Qcol from "components/qcol.vue";
+
 @Component({
 	components: {Qcol, EditCategory}
 })
 export default class ProductsCategories extends Vue {
+	filter: string = '';
 	columns: Array<any> = [
 		{
 			name: 'name',
-			field:'name',
+			field: 'name',
 			required: true,
 			label: 'Name',
 			align: 'left',
@@ -65,8 +74,8 @@ export default class ProductsCategories extends Vue {
 		this.loadTable()
 	}
 
-	created(){
-		this.$root.$on('loadProductCategories', ()=> {
+	created() {
+		this.$root.$on('loadProductCategories', () => {
 			this.loadTable()
 		})
 	}
@@ -94,7 +103,8 @@ export default class ProductsCategories extends Vue {
 			this.loadTable()
 		})
 	}
-	editCategory(_id: string){
+
+	editCategory(_id: string) {
 
 	}
 }

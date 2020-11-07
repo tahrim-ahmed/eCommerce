@@ -11,7 +11,7 @@
 				</q-col>
 				<q-col class="col-grow col-md-7 q-pl-md">
 					<q-input input-class="text-white" square v-model="text" color="white" placeholder="Search Products"
-							 dense>
+					         dense>
 						<template v-slot:append>
 							<q-icon name="search"/>
 						</template>
@@ -37,23 +37,44 @@
 						>
 							<q-list dense class="text-grey-9 text-caption">
 								<q-item @click="" clickable>
-									<q-item-section>Shirts</q-item-section>
+									<q-item-section>Cameras</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>T-Shirts</q-item-section>
+									<q-item-section>Computer & Mobile Accessories</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Sweaters</q-item-section>
+									<q-item-section>Desktops</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Pants</q-item-section>
+									<q-item-section>Gaming Consoles</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Laptops</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Mobiles</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Printers</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Speakers & Sound Systems</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Tablets</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>TV</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Wearables</q-item-section>
 								</q-item>
 							</q-list>
 						</q-menu>
 						<q-icon size="sm" class="q-ml-xs text-grey-5" name="keyboard_arrow_down"></q-icon>
 					</q-col>
 					<q-col class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cursor-pointer hover-blue" @mouseover="menu_mens=true">
-						Electronics
+						Men's Fashion
 						<q-menu
 							fit
 							@mouseleave="menu_mens=false"
@@ -63,23 +84,50 @@
 						>
 							<q-list dense class="text-grey-9 text-caption">
 								<q-item @click="" clickable>
+									<q-item-section>Hoodies & Sweaters</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Jeans</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Men's Accessories</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Men's Bags</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Men's Jackets & Coats</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Men's Pants</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Men's Shoes</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Panjabi & Fatua</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Polo Shirts</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
 									<q-item-section>Shirts</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Suits</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
 									<q-item-section>T-Shirts</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Sweaters</q-item-section>
-								</q-item>
-								<q-item @click="" clickable>
-									<q-item-section>Pants</q-item-section>
+									<q-item-section>Underwear</q-item-section>
 								</q-item>
 							</q-list>
 						</q-menu>
 						<q-icon size="sm" class="q-ml-xs text-grey-5" name="keyboard_arrow_down"></q-icon>
 					</q-col>
 					<q-col class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cursor-pointer hover-blue" @mouseover="menu_womens=true">
-						Electronics
+						Women's Fashion
 						<q-menu
 							fit
 							@mouseleave="menu_womens=false"
@@ -89,23 +137,50 @@
 						>
 							<q-list dense class="text-grey-9 text-caption">
 								<q-item @click="" clickable>
-									<q-item-section>Shirts</q-item-section>
+									<q-item-section>Kurtis</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>T-Shirts</q-item-section>
+									<q-item-section>Lingerie, Sleep & Lounge</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Saree</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Shalwar Kameez</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Shorts</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Skirts</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
 									<q-item-section>Sweaters</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Pants</q-item-section>
+									<q-item-section>Traditional</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Tops</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Women's Accessories</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Women's Jackets & Coats</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Women's Pants</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Women's Shoes</q-item-section>
 								</q-item>
 							</q-list>
 						</q-menu>
 						<q-icon size="sm" class="q-ml-xs text-grey-5" name="keyboard_arrow_down"></q-icon>
 					</q-col>
 					<q-col class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cursor-pointer hover-blue" @mouseover="menu_sports=true">
-						Electronics
+						Sports & Outdoors
 						<q-menu
 							fit
 							@mouseleave="menu_sports=false"
@@ -115,23 +190,44 @@
 						>
 							<q-list dense class="text-grey-9 text-caption">
 								<q-item @click="" clickable>
-									<q-item-section>Shirts</q-item-section>
+									<q-item-section>Boxing, Martial Arts & MMA</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>T-Shirts</q-item-section>
+									<q-item-section>Camping & Hiking</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Sweaters</q-item-section>
+									<q-item-section>Cycling</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Pants</q-item-section>
+									<q-item-section>Dumbbells</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Exercise & Fitness</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Fitness Accessories</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Outdoor Recreation</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Racket Sports</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Shoes & Clothing</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Team Sports</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Treadmills</q-item-section>
 								</q-item>
 							</q-list>
 						</q-menu>
 						<q-icon size="sm" class="q-ml-xs text-grey-5" name="keyboard_arrow_down"></q-icon>
 					</q-col>
 					<q-col class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cursor-pointer hover-blue" @mouseover="menu_appliances=true">
-						Electronics
+						Home Appliances
 						<q-menu
 							fit
 							@mouseleave="menu_appliances=false"
@@ -141,16 +237,66 @@
 						>
 							<q-list dense class="text-grey-9 text-caption">
 								<q-item @click="" clickable>
-									<q-item-section>Shirts</q-item-section>
+									<q-item-section>Cooling & Heating</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>T-Shirts</q-item-section>
+									<q-item-section>Irons & Garments Steamers</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Sweaters</q-item-section>
+									<q-item-section>Large Appliances</q-item-section>
 								</q-item>
 								<q-item @click="" clickable>
-									<q-item-section>Pants</q-item-section>
+									<q-item-section>Small Kitchen Appliances</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Vacuums & Floor Care</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Water Purifiers & Filters</q-item-section>
+								</q-item>
+							</q-list>
+						</q-menu>
+						<q-icon size="sm" class="q-ml-xs text-grey-5" name="keyboard_arrow_down"></q-icon>
+					</q-col>
+					<q-col class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cursor-pointer hover-blue" @mouseover="menu_beauty=true">
+						Health & Beauty
+						<q-menu
+							fit
+							@mouseleave="menu_beauty=false"
+							v-model="menu_beauty"
+							transition-show="flip-right"
+							transition-hide="flip-left"
+						>
+							<q-list dense class="text-grey-9 text-caption">
+								<q-item @click="" clickable>
+									<q-item-section>Bath & Body</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Beauty Tools</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Food Supplements</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Fragrances</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Hair Care</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Makeup</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Medical Supplies</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Men's Care</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Personal Care</q-item-section>
+								</q-item>
+								<q-item @click="" clickable>
+									<q-item-section>Skin Care</q-item-section>
 								</q-item>
 							</q-list>
 						</q-menu>
@@ -178,6 +324,7 @@ export default class MainLayout extends Vue {
 	menu_womens = false;
 	menu_sports = false;
 	menu_appliances = false;
+	menu_beauty = false;
 
 	text: string = ''
 }

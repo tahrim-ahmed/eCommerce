@@ -52,7 +52,7 @@
 import {Vue, Component} from 'vue-property-decorator';
 import {Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
-import {IProducts} from "src/interfaces/IProducts";
+import {IProduct} from "src/interfaces/IProduct";
 
 @Component
 export default class Products extends Vue {
@@ -151,7 +151,7 @@ export default class Products extends Vue {
 				}
 			}]).then(async rows => {
 			this.rows = rows
-			this.rows.forEach((m: IProducts) => {
+			this.rows.forEach((m: IProduct) => {
 				if (m.image) {
 					this.$storage.child(m.image).getDownloadURL().then(v => {
 						m.image = v
@@ -180,7 +180,7 @@ export default class Products extends Vue {
 		})
 	}
 
-	getImage(row: IProducts) {
+	getImage(row: IProduct) {
 		console.log(row)
 		if (row.image) {
 			return this.$storage.child(row.image).getDownloadURL().then(value => value)

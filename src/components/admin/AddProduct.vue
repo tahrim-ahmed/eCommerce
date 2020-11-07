@@ -31,8 +31,18 @@
 						</q-col>
 					</q-row>
 					<q-row>
+						<q-col>
+							<q-input v-model="product.price" label="Price Per Unit" type="number"
+							         :rules="[$common.rules.required]">
+								<template v-slot:after>
+									BDT
+								</template>
+							</q-input>
+						</q-col>
+					</q-row>
+					<q-row>
 						<q-file v-model="image">
-							<template v-slot:append>
+							<template v-slot:after>
 								<q-avatar>
 									<q-icon name="add_photo_alternate"/>
 								</q-avatar>
@@ -52,7 +62,7 @@
 <script lang="ts">
 import {Vue, Component} from 'vue-property-decorator';
 import {Loading, QForm} from "quasar";
-import {IProducts} from "src/interfaces/IProducts";
+import {IProduct} from "src/interfaces/IProduct";
 import {Collections} from "src/interfaces/util";
 import * as BSON from 'bson'
 
@@ -61,9 +71,10 @@ export default class AddProducts extends Vue {
 	show: boolean = false
 	loading: boolean = true
 	image: File = null
-	product: IProducts = {
+	product: IProduct = {
 		name: '',
 		category: null,
+		price: null,
 		quantity: '',
 		image: ''
 	}
@@ -128,6 +139,7 @@ export default class AddProducts extends Vue {
 		this.product = {
 			name: '',
 			category: null,
+			price: null,
 			quantity: '',
 			image: ''
 		}
