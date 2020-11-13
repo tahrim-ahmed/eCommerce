@@ -31,13 +31,13 @@
 										</q-item-section>
 									</q-item>
 
-									<q-item :to="{name: 'customerLogIn'}" clickable v-close-popup @click="onItemClick">
+									<q-item clickable v-close-popup @click="onItemClick">
 										<q-item-section>
 											<q-item-label>Seller</q-item-label>
 										</q-item-section>
 									</q-item>
 
-									<q-item clickable v-close-popup @click="onItemClick">
+									<q-item :to="{name: 'customerLogIn'}" clickable v-close-popup @click="onItemClick">
 										<q-item-section>
 											<q-item-label>Customer</q-item-label>
 										</q-item-section>
@@ -48,7 +48,7 @@
 					</template>
 				</q-col>
 			</q-toolbar>
-			<div class="bg-white text-grey-9 text-weight-bold shadow-transition" style="height: 35px">
+			<div class="bg-white text-grey-9 text-weight-bold shadow-transition" style="height: 35px" v-if="$realm.currentUser">
 				<q-row class="text-center items-center" style="padding-top: 7px">
 					<q-col class="col-lg-2 col-md-2 col-sm-12 col-xs-12 cursor-pointer hover-blue" @mouseover="menu_elc=true">
 						Electronics
@@ -336,13 +336,16 @@
 </template>
 
 <script lang="ts">
-
-
 import {Vue, Component} from 'vue-property-decorator';
+import AddCategory from "components/admin/AddCategory.vue";
+import {Loading} from "quasar";
+import AddProducts from "components/admin/AddProduct.vue";
 
-@Component
+@Component({
+	components: {AddProducts, AddCategory}
+})
+export default class CustomerLayout extends Vue {
 
-export default class MainLayout extends Vue {
 	menu_elc = false;
 	menu_mens = false;
 	menu_womens = false;
@@ -352,7 +355,17 @@ export default class MainLayout extends Vue {
 
 	text: string = ''
 
-	onItemClick () {
+	logout() {
+		Loading.show()
+		//@ts-ignore
+		this.$realm.currentUser.logOut().then(() => {
+			this.$router.push({name: 'customerLogIn'})
+		}).finally(()=> {
+			Loading.hide()
+		})
+	}
+
+	onItemClick(){
 
 	}
 }

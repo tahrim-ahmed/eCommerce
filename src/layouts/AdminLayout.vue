@@ -131,7 +131,9 @@ export default class MainLayout extends Vue {
 		Loading.show()
 		//@ts-ignore
 		this.$realm.currentUser.logOut().then(() => {
-			this.$router.replace({name: 'adminLogIn'})
+			this.$router.push({name: 'adminLogIn'})
+		}).finally(()=> {
+			Loading.hide()
 		})
 	}
 }

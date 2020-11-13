@@ -112,11 +112,11 @@ export default class AddProducts extends Vue {
 			this.product.image = imagePath
 		}
 
-		this.$db.collection(Collections.products).insertOne(this.product).then(value => {
+		this.$db.collection(Collections.product).insertOne(this.product).then(value => {
 			if (this.image) {
 				this.$storage.child(imagePath).put(this.image, {
 					customMetadata: {
-						collection: Collections.products,
+						collection: Collections.product,
 						id: this.product._id as string
 					}
 				})

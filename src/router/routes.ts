@@ -1,5 +1,6 @@
 import {RouteConfig} from 'vue-router';
 import {adminRoutes} from "src/router/adminRouter";
+import {customerRoutes} from "src/router/customerRouter";
 
 const routes: RouteConfig[] = [
 	{
@@ -10,6 +11,14 @@ const routes: RouteConfig[] = [
 		]
 	}, {
 		path: '/admin',
+		component: () => import('layouts/AdminLayout.vue'),
+		children: adminRoutes
+	},{
+		path: '/customer',
+		component: () => import('layouts/CustomerLayout.vue'),
+		children: customerRoutes
+	}, {
+		path: '/login',
 		component: () => import('layouts/AdminLayout.vue'),
 		children: adminRoutes
 	},

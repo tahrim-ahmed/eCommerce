@@ -6,5 +6,5 @@ export enum UserType {
 export enum Collections {
 	USERS = 'users',
 	productCategories = 'productCategories',
-	products = 'products'
+	product = 'products'
 }

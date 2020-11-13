@@ -7,8 +7,12 @@
 					<q-separator/>
 					<q-card-section>
 						<div class="text-h6" style="color: darkblue">{{ row.name }}</div>
-						<div class="text-subtitle2">{{ row.category.name }}</div>
+						<div class="text-subtitle2">Price: {{ row.price }} BDT</div>
+						<div class="text-subtitle2">In Stock: {{ row.quantity }} Units</div>
+						<div class="text-subtitle2">In {{ row.category.name }}</div>
 					</q-card-section>
+					<q-btn icon="shopping_cart" class="full-width bg-primary">
+					</q-btn>
 				</q-card>
 			</q-col>
 		</q-row>
@@ -38,10 +42,11 @@ export default class PageIndex extends Vue {
 
 	loadTable() {
 		Loading.show()
-		this.$db.collection(Collections.products).aggregate([{
+		this.$db.collection(Collections.product).aggregate([{
 			$project: {
 				name: 1,
 				category: 1,
+				price: 1,
 				quantity: 1,
 				image: 1
 			},
@@ -60,6 +65,7 @@ export default class PageIndex extends Vue {
 				$project: {
 					name: 1,
 					image: 1,
+					price: 1,
 					category: {
 						$arrayElemAt: ['$category', 0]
 					},
