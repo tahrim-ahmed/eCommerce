@@ -1,7 +1,13 @@
 <template>
 	<q-page padding>
-		<q-table grid title="Product Lists" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
-				 :filter="filter" hide-header>
+		<div class="q-pa-md q-gutter-sm">
+			<q-breadcrumbs>
+				<q-breadcrumbs-el label="Home" icon="home"/>
+				<q-breadcrumbs-el label="Products" icon="view_stream"/>
+			</q-breadcrumbs>
+		</div>
+		<q-table grid title="" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
+		         :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width" hide-header>
 			<template v-slot:top-right>
 				<q-input dense debounce="300" v-model="filter" placeholder="Search">
 					<template v-slot:append>
@@ -10,38 +16,55 @@
 				</q-input>
 			</template>
 			<template v-slot:item="{row}">
-				<q-col class="col-sm-3 col-12 q-px-md">
+				<q-col class="q-pa-xs col-xs-3 col-sm-3 col-md-3">
 					<q-card class="my-card full-height">
-						<q-img :src="row.image" height="200px" contain/>
+						<q-img class="cursor-pointer" :src="row.image" @click="showDetails(row)" height="200px" contain/>
 						<q-separator/>
 						<q-card-section>
-							<div class="text-h6" style="color: darkblue">{{ row.name }}</div>
-							<div class="text-subtitle2">Price: {{ row.price }} BDT</div>
+							<div class="text-h6 cursor-pointer" style="color: darkblue" @click="showDetails(row)">{{ row.name }}</div>
+							<div class="text-subtitle2">Price: {{ numberWithCommas(row.price) }} BDT</div>
 							<div class="text-subtitle2">In Stock: {{ row.quantity }} Units</div>
-							<div class="text-subtitle2">{{ row.category.name }}</div>
+							<div class="text-subtitle2">In {{ row.category.name }}</div>
 						</q-card-section>
-						<q-btn icon="delete">
-							<q-popup-proxy persistent>
-								<q-card>
-									<q-card-section class="q-pb-none">
-										<q-banner dense>
-											<template v-slot:avatar>
-												<q-icon name="warning" color="red"/>
-											</template>
-											You are about to delete this data!
-										</q-banner>
-									</q-card-section>
-									<q-card-actions align="right" class="q-pt-none">
-										<q-btn label="Confirm" no-caps v-close-popup @click="deleteItem(row._id)" color="red"/>
-										<q-btn label="No" no-caps v-close-popup/>
-									</q-card-actions>
-								</q-card>
-							</q-popup-proxy>
-						</q-btn>
+						<q-card-section class="row">
+							<q-btn size="sm" color="positive" icon="edit" @click="$root.$emit('showEditProduct',row._id)"/>
+							<q-space/>
+							<q-btn size="sm" color="negative" icon="delete">
+								<q-popup-proxy persistent>
+									<q-card>
+										<q-card-section class="q-pb-none">
+											<q-banner dense>
+												<template v-slot:avatar>
+													<q-icon name="warning" color="red"/>
+												</template>
+												You are about to delete this data!
+											</q-banner>
+										</q-card-section>
+										<q-card-actions align="right" class="q-pt-none">
+											<q-btn label="Confirm" no-caps v-close-popup @click="deleteItem(row._id)" color="red"/>
+											<q-btn label="No" no-caps v-close-popup/>
+										</q-card-actions>
+									</q-card>
+								</q-popup-proxy>
+							</q-btn>
+						</q-card-section>
 					</q-card>
 				</q-col>
 			</template>
 		</q-table>
+		<edit-product/>
+		<q-dialog v-model="showModal">
+			<q-card v-if="productDetails">
+				<q-img :src="productDetails.image" />
+				<q-separator/>
+				<q-card-section>
+					<div class="text-h6" style="color: darkblue">{{ productDetails.name }}</div>
+					<div class="text-subtitle2">Price: {{ numberWithCommas(productDetails.price) }} BDT</div>
+					<div class="text-subtitle2">In Stock: {{ productDetails.quantity }} Units</div>
+					<div class="text-subtitle2">In {{ productDetails.category.name }}</div>
+				</q-card-section>
+			</q-card>
+		</q-dialog>
 	</q-page>
 </template>
 
@@ -50,10 +73,25 @@ import {Vue, Component} from 'vue-property-decorator';
 import {Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
 import {IProduct} from "src/interfaces/IProduct";
+import EditProduct from "components/admin/EditProduct.vue";
+import Details from "components/Details.vue";
 
-@Component
+@Component({
+	components: {Details, EditProduct}
+})
 export default class Products extends Vue {
 	filter: string = '';
+	pagination: any = {
+		sortBy: 'name',
+		descending: false,
+		page: 1,
+		rowsPerPage: 16
+	}
+
+	numberWithCommas(x: any): any {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
 	columns: Array<any> = [
 		{
 			name: 'image',
@@ -109,10 +147,8 @@ export default class Products extends Vue {
 		{
 			name: 'action',
 			field: '_id',
-			required: true,
 			label: 'Action',
-			align: 'left',
-			sortable: true
+			align: 'left'
 		}
 	]
 	rows: any[] = []
@@ -194,6 +230,14 @@ export default class Products extends Vue {
 		if (row.image) {
 			return this.$storage.child(row.image).getDownloadURL().then(value => value)
 		}
+	}
+
+	showModal: boolean = false
+	productDetails: any = null
+
+	showDetails(row: any) {
+		this.productDetails = row
+		this.showModal = true
 	}
 }
 </script>

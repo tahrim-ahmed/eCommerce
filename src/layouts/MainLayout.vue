@@ -4,10 +4,12 @@
 			<q-toolbar class="row">
 				<q-space/>
 				<q-col class="col-auto">
-					<q-toolbar-title>
-						<q-icon name="shopping_cart"/>
-						eCommerce
-					</q-toolbar-title>
+					<router-link :to="{name: 'home'}">
+						<q-toolbar-title>
+							<q-icon name="shopping_cart"/>
+							eCommerce
+						</q-toolbar-title>
+					</router-link>
 				</q-col>
 				<q-col class="col-grow col-md-7 q-pl-md">
 					<q-input input-class="text-white" square v-model="text" color="white" placeholder="Search Products"
@@ -23,27 +25,74 @@
 				<q-col class="col-grow q-pl-md">
 					<template>
 						<div class="q-pa-md">
-							<q-btn-dropdown color="black" label="Log In" dropdown-icon="change_history">
-								<q-list>
-									<q-item :to="{name: 'adminLogIn'}" clickable v-close-popup @click="onItemClick">
+							<q-btn text-color="black" icon="shopping_cart" color="white" no-caps>
+								<q-badge color="negative" floating v-if="$store.getters.cartItems.length">{{ $store.getters.cartItems.length }}</q-badge>
+								<q-menu persistent>
+									<q-item style="width: 500px">
 										<q-item-section>
-											<q-item-label>Admin</q-item-label>
+											<q-row>
+												<q-col class="col-md-4 text-subtitle2">
+													Item Name
+												</q-col>
+												<q-col class="col-md-3 text-subtitle2">
+													Item Quantity
+												</q-col>
+												<q-col class="col-md-2 text-subtitle2">
+													Unit Price
+												</q-col>
+												<q-col class="col-md-3 text-subtitle2">
+													Total Price
+												</q-col>
+											</q-row>
+										</q-item-section>
+									</q-item>
+									<q-separator/>
+									<q-item v-for="item of $store.getters.cartItems " style="width: 500px" :key="Math.random()">
+										<q-item-section>
+											<q-row>
+												<q-col class="col-md-4">
+													{{ item.name }}
+												</q-col>
+												<q-col class="col-md-3">
+													{{ item.quantity }}
+												</q-col>
+												<q-col class="col-md-2">
+													{{ item.price }}
+												</q-col>
+												<q-col class="col-md-3">
+													{{ item.price * item.quantity }} BDT
+												</q-col>
+											</q-row>
+										</q-item-section>
+									</q-item>
+									<q-separator/>
+									<q-item style="width: 500px">
+										<q-item-section>
+											<q-row>
+												<q-col class="col-md-9">
+													Total:
+												</q-col>
+												<q-col class="col-md-3">
+													{{$store.getters.cartItems.map((i)=>Number(i.price)).reduce((a, b)=>a+b,0)}} BDT
+												</q-col>
+											</q-row>
 										</q-item-section>
 									</q-item>
 
-									<q-item :to="{name: 'customerLogIn'}" clickable v-close-popup @click="onItemClick">
+									<q-item>
 										<q-item-section>
-											<q-item-label>Seller</q-item-label>
+											<q-btn label="Check Out" no-caps v-close-popup color="primary" @click="initCheckout"/>
+										</q-item-section>
+										<q-item-section>
+											<q-btn label="Close" no-caps v-close-popup/>
 										</q-item-section>
 									</q-item>
-
-									<q-item clickable v-close-popup @click="onItemClick">
-										<q-item-section>
-											<q-item-label>Customer</q-item-label>
-										</q-item-section>
-									</q-item>
-								</q-list>
-							</q-btn-dropdown>
+								</q-menu>
+							</q-btn>
+							<q-btn text-color="black" label="My Orders" @click="orders" color="white" no-caps v-if="$store.getters.isLoggedIn"/>
+							<q-btn text-color="black" label="Sign Out" @click="logout" color="white" no-caps v-if="$store.getters.isLoggedIn"/>
+							<q-btn color="white" text-color="black" label="Sign Up" no-caps v-if="!$store.getters.isLoggedIn" :to="{name:'signup'}"/>
+							<q-btn color="white" text-color="black" label="Sign In" no-caps v-if="!$store.getters.isLoggedIn" :to="{name:'login'}"/>
 						</div>
 					</template>
 				</q-col>
@@ -339,8 +388,13 @@
 
 
 import {Vue, Component} from 'vue-property-decorator';
+import {Loading} from "quasar";
+import {IProduct} from "src/interfaces/IProduct";
+import Qcol from "components/qcol.vue";
 
-@Component
+@Component({
+	components: {Qcol}
+})
 
 export default class MainLayout extends Vue {
 	menu_elc = false;
@@ -352,8 +406,68 @@ export default class MainLayout extends Vue {
 
 	text: string = ''
 
-	onItemClick () {
+	onItemClick() {
 
+	}
+
+	created() {
+		this.$root.$on('addToCart', (row: IProduct) => {
+			let product: IProduct = JSON.parse(JSON.stringify(row))
+			if (Number(row.quantity) > 0) {
+				let cartItems = this.$q.localStorage.getItem<Array<IProduct>>('cartItems') || []
+				let index = cartItems.findIndex((ci: IProduct) => product._id === ci._id)
+				if (index < 0) {
+					product.availableQuantity = row.quantity;
+					product.quantity = 1;
+					cartItems.push(product)
+				} else {
+					product = cartItems[index]
+					if ((product.quantity + 1) <= row.quantity) {
+						product.quantity += 1
+						cartItems[index] = product
+					} else {
+						this.$q.notify({
+							message: 'Out of stock Limit!',
+							type: 'negative'
+						})
+					}
+				}
+				this.$store.commit('setItems', cartItems)
+				this.$q.localStorage.set('cartItems', cartItems)
+			} else {
+				this.$q.notify({
+					message: 'Out of stock Limit!',
+					type: 'negative'
+				})
+			}
+		})
+	}
+
+	initCheckout() {
+		console.log(this.$q.localStorage.getItem<Array<IProduct>>('cartItems'));
+		Loading.show()
+		this.$router.push({name: 'checkout'}).finally(() => {
+			Loading.hide()
+		})
+	}
+
+	orders(){
+		Loading.show()
+		this.$router.push({name: 'orders'}).finally(()=>{
+			Loading.hide()
+		})
+	}
+
+	logout() {
+		Loading.show()
+		//@ts-ignore
+		this.$realm.currentUser.logOut().then(() => {
+			this.$store.commit("setCurrentUser", null)
+			this.$store.commit("setIsLoggedIn", !this.$realm.currentUser.identities.map(value => value.providerType).includes("anon-user"))
+			this.$router.push({name: 'home'})
+		}).finally(() => {
+			Loading.hide()
+		})
 	}
 }
 

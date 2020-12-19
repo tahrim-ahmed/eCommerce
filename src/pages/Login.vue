@@ -8,6 +8,9 @@
 						<q-row>
 							<q-col style="margin-top: 5%">
 								<q-card-section>
+									Enter following information
+								</q-card-section>
+								<q-card-section>
 									<q-input input-class="#4c4c4c" square v-model="user.email" color="white"
 											 placeholder="User Name" :rules="[$common.rules.required]"
 											 dense type="email">
@@ -36,26 +39,32 @@ import {Component, Vue} from 'vue-property-decorator';
 import {IUser} from "src/interfaces/IUser";
 import * as Realm from 'realm-web'
 import {Loading} from "quasar";
+import {UserType} from "src/interfaces/util";
 
 
 @Component
-export default class NewUser extends Vue {
+export default class Login extends Vue {
 	user: IUser = {
 		email: 'pranhinmiad30@gmail.com',
 		password: '20212021'
 	}
 
 	created() {
-		console.log(this.$realm.currentUser)
+
 	}
 
 	signIn() {
 		Loading.show()
 		let credentials = Realm.Credentials.emailPassword(this.user.email, this.user.password)
 		this.$realm.logIn(credentials).then(user => {
-			//this.$realm.currentUser.profile.type = UserType.ADMIN
-
-			open('/admin', "_self")
+			this.$store.commit("setCurrentUser", this.$realm.currentUser.customData)
+			this.$store.commit("setIsLoggedIn", !this.$realm.currentUser.identities.map(value => value.providerType).includes("anon-user"))
+			console.log(this.$realm.currentUser.customData.userType, UserType.ADMIN);
+			if (this.$realm.currentUser.customData.userType == UserType.ADMIN) {
+				this.$router.push({name: 'adminHome'})
+			} else {
+				open('/customer', "_self")
+			}
 
 		}).finally(() => {
 			Loading.hide()

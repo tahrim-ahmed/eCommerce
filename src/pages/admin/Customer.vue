@@ -1,6 +1,19 @@
 <template>
 	<q-page>
-		<q-table title="Product Categories" :data="rows" :columns="columns" row-key="_id.$oid" color="amber" :filter="filter">
+		<div class="q-pa-md q-gutter-sm">
+			<q-breadcrumbs>
+				<q-breadcrumbs-el label="Home" icon="home"/>
+				<q-breadcrumbs-el label="Customer" icon="group"/>
+			</q-breadcrumbs>
+		</div>
+		<q-table title="Customer List" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
+		         :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width">
+			<template v-slot:no-data="{ icon, message, filter }">
+				<div class="full-width row flex-center text-accent q-gutter-sm text-h4 q-my-xl q-py-xl">
+					<q-icon color="warning" :name="filter ? 'warning' : icon" size="2em"/>
+					<span>No data to show!</span>
+				</div>
+			</template>
 			<template v-slot:top-right>
 				<q-input dense debounce="300" v-model="filter" placeholder="Search">
 					<template v-slot:append>
@@ -10,7 +23,7 @@
 			</template>
 			<template v-slot:body-cell-action="props">
 				<q-td :props="props">
-					<q-btn icon="edit" @click="$root.$emit('showEditCategory', props.row._id)"/>
+					<q-separator/>
 					<q-btn icon="delete">
 						<q-popup-proxy persistent>
 							<q-card>
@@ -33,44 +46,49 @@
 				</q-td>
 			</template>
 		</q-table>
-		<edit-category/>
 	</q-page>
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Vue, Watch} from 'vue-property-decorator';
 import {Collections} from "src/interfaces/util";
 import {Loading} from "quasar";
-import EditCategory from "components/admin/EditCategory.vue";
 import Qcol from "components/qcol.vue";
 
 @Component({
-	components: {Qcol, EditCategory}
+	components: {Qcol}
 })
-export default class ProductsCategories extends Vue {
+export default class Customer extends Vue {
 	filter: string = '';
-	columns: Array<any> = [
-		{
-			name: 'name',
-			field: 'name',
-			required: true,
-			label: 'Name',
-			align: 'left',
-			format: (v: any) => v,
-			sortable: true
-		},
-		{
-			name: 'action',
-			field: '_id',
-			required: true,
-			label: 'Action',
-			align: 'left',
-			sortable: true
-		}
-	]
+	pagination: any = {
+		sortBy: 'name',
+		descending: false,
+		page: 1,
+		rowsPerPage: 10
+	}
+
+	columns: Array<any> = []
 	rows: any[] = []
 
-	mounted() {
+	@Watch('$route', {immediate: true})
+	onRouteEnter() {
+		this.columns = [
+			{
+				name: 'name',
+				field: 'userID',
+				required: true,
+				label: 'Name',
+				align: 'left',
+				format: (v: any) => v,
+				sortable: true
+			},
+			{
+				name: 'action',
+				field: '_id',
+				label: 'Action',
+				align: 'left'
+			}
+		]
 		this.loadTable()
 	}
 
@@ -82,7 +100,7 @@ export default class ProductsCategories extends Vue {
 
 	loadTable() {
 		Loading.show()
-		this.$db.collection(Collections.productCategories).find().then(rows => {
+		this.$db.collection(Collections.USERS).find().then(rows => {
 			this.rows = rows
 		}).finally(() => {
 			Loading.hide()
@@ -91,7 +109,7 @@ export default class ProductsCategories extends Vue {
 
 	deleteCategory(_id: string) {
 		Loading.show()
-		this.$db.collection(Collections.productCategories).deleteOne({
+		this.$db.collection(Collections.USERS).deleteOne({
 			_id
 		}).then(() => {
 			this.$q.notify({
@@ -102,10 +120,6 @@ export default class ProductsCategories extends Vue {
 			Loading.hide()
 			this.loadTable()
 		})
-	}
-
-	editCategory(_id: string) {
-
 	}
 }
 </script>

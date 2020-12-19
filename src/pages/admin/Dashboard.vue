@@ -1,5 +1,9 @@
 <template>
-
+	<div class="q-pa-md q-gutter-sm">
+		<q-breadcrumbs>
+			<q-breadcrumbs-el label="Home" icon="home"/>
+		</q-breadcrumbs>
+	</div>
 </template>
 
 <script lang="ts">

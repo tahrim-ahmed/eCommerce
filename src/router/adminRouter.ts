@@ -28,12 +28,12 @@ export const adminRoutes: RouteConfig[] = [
 		path: 'products',
 		name: 'products',
 		component: () => import('pages/admin/Products.vue')
-	}, {
+	},{
 		meta: {
-			isAdmin: false
+			isAdmin: true
 		},
-		path: 'login',
-		name: 'adminLogIn',
-		component: () => import('pages/admin/Login.vue')
+		path: 'customer',
+		name: 'customer',
+		component: () => import('pages/admin/Customer.vue')
 	},
 ]

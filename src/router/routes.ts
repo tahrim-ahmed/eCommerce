@@ -7,20 +7,25 @@ const routes: RouteConfig[] = [
 		path: '/',
 		component: () => import('layouts/MainLayout.vue'),
 		children: [
-			{path: '', component: () => import('pages/Index.vue')}
+			{path: '', name: 'home', component: () => import('pages/Index.vue'),},
+			{
+				path: 'signup',
+				name: 'signup',
+				component: () => import('pages/customer/SignUp.vue')
+			}, {
+				path: 'login',
+				name: 'login',
+				component: () => import('pages/Login.vue')
+			},
 		]
 	}, {
 		path: '/admin',
 		component: () => import('layouts/AdminLayout.vue'),
 		children: adminRoutes
-	},{
-		path: '/customer',
-		component: () => import('layouts/CustomerLayout.vue'),
-		children: customerRoutes
 	}, {
-		path: '/login',
-		component: () => import('layouts/AdminLayout.vue'),
-		children: adminRoutes
+		path: '/customer',
+		component: () => import('layouts/MainLayout.vue'),
+		children: customerRoutes
 	},
 
 	// Always leave this as last one,

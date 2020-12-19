@@ -12,6 +12,9 @@ export default boot(({Vue}) => {
 		rules: {
 			required(v: any) {
 				return v.length || 'Field is Required!'
+			},
+			number(v: any) {
+				return !isNaN(v) || 'Field is Required!'
 			}
 		}
 	}
@@ -26,7 +29,8 @@ declare module 'vue/types/vue' {
 		$db: MongoDBDatabase,
 		$common: {
 			rules: {
-				required(v: any): true | String
+				required(v: any): true | String,
+				number(v: any):true | number
 			}
 		}
 	}

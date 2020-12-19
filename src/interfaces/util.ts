@@ -1,6 +1,6 @@
 export enum UserType {
-	ADMIN = 1,
-	CUSTOMER = 2
+	ADMIN = '1',
+	CUSTOMER = '2'
 }
 
 export enum Collections {

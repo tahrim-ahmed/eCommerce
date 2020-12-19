@@ -1,33 +1,58 @@
-import { store } from 'quasar/wrappers';
+import {store} from 'quasar/wrappers';
 import Vuex from 'vuex';
+import {IProduct} from "src/interfaces/IProduct";
+import {LocalStorage} from "quasar";
+import {IUser} from "src/interfaces/IUser";
+import {INewUser} from "src/interfaces/INewUser";
 
-// import example from './module-example';
-// import { ExampleStateInterface } from './module-example/state';
-
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
 
 export interface StateInterface {
-  // Define your own store structure, using submodules if needed
-  // example: ExampleStateInterface;
-  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  example: unknown;
+	currentUser: INewUser
+	isLoggedIn: boolean
+	cartItems: IProduct[];
 }
 
-export default store(function ({ Vue }) {
-  Vue.use(Vuex);
+export default store(function ({Vue}) {
+	Vue.use(Vuex);
 
-  const Store = new Vuex.Store<StateInterface>({
-    modules: {
-      // example
-    },
+	const Store = new Vuex.Store<StateInterface>({
+		modules: {
+			// example
+		},
+		mutations: {
+			setItems: (state, items) => {
+				state.cartItems = items
+			},
+			incrementItemQuantity: (state, item: IProduct) => {
+				let index = state.cartItems.findIndex((i: IProduct) => i._id === item._id)
+				state.cartItems[index].quantity++
+			}, decrementItemQuantity: (state, item: IProduct) => {
+				let index = state.cartItems.findIndex((i: IProduct) => i._id === item._id)
+				state.cartItems[index].quantity--
+			},
+			clearCart: (state) => {
+				state.cartItems = []
+				LocalStorage.set('cartItems', [])
+			},
+			setCurrentUser: (state, user) => {
+				state.currentUser = user
+			},
+			setIsLoggedIn: (state, val) => {
+				state.isLoggedIn = val
+			}
+		},
+		state: {
+			cartItems: LocalStorage.getItem<Array<IProduct>>('cartItems') || [],
+			currentUser: null,
+			isLoggedIn: false
+		},
+		getters: {
+			cartItems: (state) => state.cartItems,
+			isLoggedIn: (state) => state.isLoggedIn,
+			currentUser: (state) => state.currentUser,
+		},
+		strict: !!process.env.DEBUGGING
+	});
 
-    // enable strict mode (adds overhead!)
-    // for dev mode only
-    strict: !!process.env.DEBUGGING
-  });
-
-  return Store;
+	return Store;
 });

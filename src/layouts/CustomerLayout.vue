@@ -25,7 +25,7 @@
 						<div class="q-pa-md">
 							<q-btn-dropdown color="black" label="Log In" dropdown-icon="change_history">
 								<q-list>
-									<q-item :to="{name: 'adminLogIn'}" clickable v-close-popup @click="onItemClick">
+									<q-item :to="{name: 'login'}" clickable v-close-popup @click="onItemClick">
 										<q-item-section>
 											<q-item-label>Admin</q-item-label>
 										</q-item-section>
@@ -37,7 +37,7 @@
 										</q-item-section>
 									</q-item>
 
-									<q-item :to="{name: 'customerLogIn'}" clickable v-close-popup @click="onItemClick">
+									<q-item :to="{name: 'login'}" clickable v-close-popup @click="onItemClick">
 										<q-item-section>
 											<q-item-label>Customer</q-item-label>
 										</q-item-section>
@@ -359,7 +359,7 @@ export default class CustomerLayout extends Vue {
 		Loading.show()
 		//@ts-ignore
 		this.$realm.currentUser.logOut().then(() => {
-			this.$router.push({name: 'customerLogIn'})
+			this.$router.push({name: 'login'})
 		}).finally(()=> {
 			Loading.hide()
 		})

@@ -50,7 +50,12 @@
 						</q-file>
 					</q-row>
 				</q-card-section>
+				<q-card-section>
+
+				</q-card-section>
 				<q-card-actions v-if="!loading">
+					<q-btn label="New" no-caps color="green-10" />
+					<q-space/>
 					<q-btn label="Save" no-caps color="primary" type="submit"/>
 					<q-btn label="Close" no-caps @click="closeModal"/>
 				</q-card-actions>
@@ -75,7 +80,7 @@ export default class AddProducts extends Vue {
 		name: '',
 		category: null,
 		price: null,
-		quantity: '',
+		quantity: 0,
 		image: ''
 	}
 	optionsCategories: Array<any> = []
@@ -96,7 +101,9 @@ export default class AddProducts extends Vue {
 
 	filterFn(val: string, update: Function) {
 		if (val === '') {
-			this.optionsFilteredCategories = []
+			update(() => {
+				this.optionsFilteredCategories = this.optionsCategories
+			})
 		} else {
 			update(() => {
 				this.optionsFilteredCategories = this.optionsCategories.filter(f => (f.name.toLowerCase().indexOf(val.toLowerCase()) > -1))
@@ -117,7 +124,7 @@ export default class AddProducts extends Vue {
 				this.$storage.child(imagePath).put(this.image, {
 					customMetadata: {
 						collection: Collections.product,
-						id: this.product._id as string
+						id: this.product._id.toHexString()
 					}
 				})
 			}
@@ -140,7 +147,7 @@ export default class AddProducts extends Vue {
 			name: '',
 			category: null,
 			price: null,
-			quantity: '',
+			quantity: 0,
 			image: ''
 		}
 	}

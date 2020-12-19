@@ -81,23 +81,61 @@
 							</q-item>
 						</q-list>
 					</q-expansion-item>
-					<q-item @click="$root.$emit('showAddProducts')" clickable>
+					<q-expansion-item label="Products" icon="view_stream">
+						<q-list>
+							<q-item @click="$root.$emit('showAddProducts')" clickable>
+								<q-item-section avatar>
+									<q-icon name="library_add"/>
+								</q-item-section>
+								<q-item-section>
+									<q-item-label>
+										Add Product
+									</q-item-label>
+								</q-item-section>
+							</q-item>
+							<q-item :to="{name: 'products'}" exact>
+								<q-item-section avatar>
+									<q-icon name="format_list_bulleted"/>
+								</q-item-section>
+								<q-item-section>
+									<q-item-label>
+										Products List
+									</q-item-label>
+								</q-item-section>
+							</q-item>
+						</q-list>
+					</q-expansion-item>
+					<q-expansion-item label="Users" icon="account_circle">
+						<q-list>
+							<q-item @click="$root.$emit('showAddProducts')" clickable>
+								<q-item-section avatar>
+									<q-icon name="group"/>
+								</q-item-section>
+								<q-item-section>
+									<q-item-label>
+										Sellers
+									</q-item-label>
+								</q-item-section>
+							</q-item>
+							<q-item :to="{name: 'customer'}" exact>
+								<q-item-section avatar>
+									<q-icon name="group"/>
+								</q-item-section>
+								<q-item-section>
+									<q-item-label>
+										Customers
+									</q-item-label>
+								</q-item-section>
+							</q-item>
+						</q-list>
+					</q-expansion-item>
+					<q-item :to="{name: 'orders'}" exact>
 						<q-item-section avatar>
-							<q-icon name="library_add"/>
+							<q-icon name="home"/>
 						</q-item-section>
 						<q-item-section>
 							<q-item-label>
-								Add Product
-							</q-item-label>
-						</q-item-section>
-					</q-item>
-					<q-item :to="{name: 'products'}" exact>
-						<q-item-section avatar>
-							<q-icon name="format_list_bulleted"/>
-						</q-item-section>
-						<q-item-section>
-							<q-item-label>
-								Products List
+								Orders
 							</q-item-label>
 						</q-item-section>
 					</q-item>
@@ -131,8 +169,10 @@ export default class MainLayout extends Vue {
 		Loading.show()
 		//@ts-ignore
 		this.$realm.currentUser.logOut().then(() => {
-			this.$router.push({name: 'adminLogIn'})
-		}).finally(()=> {
+			this.$store.commit("setCurrentUser", null)
+			this.$store.commit("setIsLoggedIn", !this.$realm.currentUser.identities.map(value => value.providerType).includes("anon-user"))
+			this.$router.push({name: 'home'})
+		}).finally(() => {
 			Loading.hide()
 		})
 	}
