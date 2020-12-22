@@ -74,10 +74,9 @@ import {Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
 import {IProduct} from "src/interfaces/IProduct";
 import EditProduct from "components/admin/EditProduct.vue";
-import Details from "components/Details.vue";
 
 @Component({
-	components: {Details, EditProduct}
+	components: { EditProduct}
 })
 export default class Products extends Vue {
 	filter: string = '';
@@ -244,3 +243,10 @@ export default class Products extends Vue {
 
 <style lang=scss>
 </style>
+
+userID
+productID
+itemQuantity
+itemPrice
+paymentStatus
+deliveryStatus

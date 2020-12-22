@@ -13,8 +13,16 @@ export const customerRoutes: RouteConfig[] = [
 		name: 'checkout',
 		component: () => import('pages/customer/Checkout.vue')
 	}, {
-		path: 'orders',
-		name: 'orders',
-		component: () => import('pages/customer/Orders.vue')
+		path: 'myOrders',
+		name: 'myOrders',
+		component: () => import('pages/customer/MyOrder.vue')
+	}, {
+		path: ':category/:subCategory',
+		name: 'category',
+		component: () => import('pages/customer/Category.vue')
+	}, {
+		path: 'payment',
+		name: 'payment',
+		component: () => import('pages/customer/Payment.vue')
 	},
 ]

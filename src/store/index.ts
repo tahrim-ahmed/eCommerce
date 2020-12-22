@@ -2,7 +2,6 @@ import {store} from 'quasar/wrappers';
 import Vuex from 'vuex';
 import {IProduct} from "src/interfaces/IProduct";
 import {LocalStorage} from "quasar";
-import {IUser} from "src/interfaces/IUser";
 import {INewUser} from "src/interfaces/INewUser";
 
 

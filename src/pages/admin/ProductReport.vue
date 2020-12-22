@@ -1,35 +1,22 @@
 <template>
 	<q-page padding>
-		<q-table grid title="" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
+		<div class="q-pa-md q-gutter-sm">
+			<q-breadcrumbs>
+				<q-breadcrumbs-el label="Home" icon="home"/>
+				<q-breadcrumbs-el label="Product Report" icon="view_stream"/>
+			</q-breadcrumbs>
+		</div>
+		<q-table title="" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
 				 :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width" hide-header>
 			<template v-slot:top-right>
-				<q-input dense debounce="300" v-model="filter" placeholder="Search Item or Category">
+				<q-input dense debounce="300" v-model="filter" placeholder="Search">
 					<template v-slot:append>
 						<q-icon name="search"/>
 					</template>
 				</q-input>
 			</template>
-			<template v-slot:item="{row}">
-				<q-col class="q-pa-xs col-xs-3 col-sm-3 col-md-3">
-					<q-card class="my-card full-height cursor-pointer">
-						<q-img :src="row.image" height="200px" contain @click="$root.$emit('showProductDetails', row._id)"/>
-						<q-separator/>
-						<q-card-section>
-							<div class="text-h6" style="color: darkblue">{{ row.name }}</div>
-							<div class="text-subtitle2">Price: {{ numberWithCommas(row.price) }} BDT</div>
-							<div class="text-subtitle2">In Stock: {{ row.quantity }} Units</div>
-							<div class="text-subtitle2">In {{ row.category.name }}</div>
-						</q-card-section>
-						<q-card-section class="row">
-							<q-space/>
-							<q-btn class="full-width skip-btn" color="primary" icon="shopping_cart" @click="$root.$emit('addToCart',row)"/>
-							<q-space/>
-						</q-card-section>
-					</q-card>
-				</q-col>
-			</template>
 		</q-table>
-		<product-details/>
+		<edit-product/>
 	</q-page>
 </template>
 
@@ -39,18 +26,17 @@ import {Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
 import {IProduct} from "src/interfaces/IProduct";
 import EditProduct from "components/admin/EditProduct.vue";
-import ProductDetails from "components/customer/ProductDetails.vue";
 
 @Component({
-	components: {ProductDetails, EditProduct}
+	components: { EditProduct}
 })
-export default class Index extends Vue {
+export default class ProductReport extends Vue {
 	filter: string = '';
 	pagination: any = {
 		sortBy: 'name',
 		descending: false,
 		page: 1,
-		rowsPerPage: 20
+		rowsPerPage: 16
 	}
 
 	numberWithCommas(x: any): any {
@@ -58,21 +44,6 @@ export default class Index extends Vue {
 	}
 
 	columns: Array<any> = [
-		{
-			name: 'image',
-			field: 'image',
-			required: true,
-			label: 'Image',
-			align: 'left',
-			format: (v: any) => {
-				if (v) {
-					return this.$storage.child(v).getDownloadURL()
-				} else {
-					return ''
-				}
-			},
-			sortable: true
-		},
 		{
 			name: 'name',
 			field: 'name',
@@ -108,12 +79,6 @@ export default class Index extends Vue {
 			align: 'left',
 			format: (v: any) => v,
 			sortable: true
-		},
-		{
-			name: 'action',
-			field: '_id',
-			label: 'Action',
-			align: 'left'
 		}
 	]
 	rows: any[] = []
@@ -175,31 +140,15 @@ export default class Index extends Vue {
 		})
 	}
 
-	deleteItem(_id: string) {
-		Loading.show()
-		this.$db.collection(Collections.product).deleteOne({
-			_id
-		}).then(() => {
-			this.$q.notify({
-				message: 'Deleted Successfully!',
-				type: 'positive'
-			})
-		}).finally(() => {
-			Loading.hide()
-			this.loadTable()
-		})
-	}
-
-	getImage(row: IProduct) {
-		if (row.image) {
-			return this.$storage.child(row.image).getDownloadURL().then(value => value)
-		}
-	}
-
-	productDetails: any = null
-
 }
 </script>
 
 <style lang=scss>
 </style>
+
+userID
+productID
+itemQuantity
+itemPrice
+paymentStatus
+deliveryStatus

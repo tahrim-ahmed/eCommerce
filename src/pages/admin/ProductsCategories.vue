@@ -7,7 +7,7 @@
 			</q-breadcrumbs>
 		</div>
 		<q-table title="Product Categories" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
-		         :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width">
+				 :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width">
 			<template v-slot:no-data="{ icon, message, filter }">
 				<div class="full-width row flex-center text-accent q-gutter-sm text-h4 q-my-xl q-py-xl">
 					<q-icon color="warning" :name="filter ? 'warning' : icon" size="2em"/>
@@ -76,6 +76,14 @@ export default class ProductsCategories extends Vue {
 	onRouteEnter() {
 		this.columns = [
 			{
+				name: 'parent',
+				field: 'category',
+				required: true,
+				label: 'Parent Category',
+				align: 'left',
+				format: (v: any) => v.length ? v[0].name : '',
+				sortable: true
+			}, {
 				name: 'name',
 				field: 'name',
 				required: true,
@@ -102,7 +110,19 @@ export default class ProductsCategories extends Vue {
 
 	loadTable() {
 		Loading.show()
-		this.$db.collection(Collections.productCategories).find().then(rows => {
+		this.$db.collection(Collections.productCategories).aggregate([
+			{
+				$lookup: {
+					from: Collections.productCategories,
+					let: {id: '$parent'},
+					pipeline: [
+						{$match: {$expr: {$eq: ['$_id', '$$id']}}},
+						{$project: {_id: 1, name: 1}}
+					],
+					as: 'category'
+				}
+			}
+		]).then(rows => {
 			this.rows = rows
 		}).finally(() => {
 			Loading.hide()

@@ -8,6 +8,11 @@
 				<q-card-section>
 					<q-row>
 						<q-col class="col-12">
+							<q-select v-model="category.parent" label="Parent Category" emit-value option-value="_id" option-label="name" map-options clearable :options="categories"/>
+						</q-col>
+					</q-row>
+					<q-row>
+						<q-col class="col-12">
 							<q-input v-model="category.name" label="Category Name" :rules="[$common.rules.required]"/>
 						</q-col>
 					</q-row>
@@ -32,10 +37,17 @@ export default class AddCategory extends Vue {
 	show: boolean = false
 	category: ICategory = {
 		name: '',
+		parent: null
 	}
+	categories: ICategory[] = []
 
 	created() {
 		this.$root.$on('showAddCategory', () => {
+			this.$db.collection(Collections.productCategories).find({
+				$or: [{parent: {$eq: null}}, {parent: {$eq: undefined}}]
+			}).then(value => {
+				this.categories = value
+			})
 			this.show = true
 		})
 	}

@@ -63,7 +63,7 @@ export default class Login extends Vue {
 			if (this.$realm.currentUser.customData.userType == UserType.ADMIN) {
 				this.$router.push({name: 'adminHome'})
 			} else {
-				open('/customer', "_self")
+				open('/', "_self")
 			}
 
 		}).finally(() => {

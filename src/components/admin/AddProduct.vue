@@ -54,7 +54,6 @@
 
 				</q-card-section>
 				<q-card-actions v-if="!loading">
-					<q-btn label="New" no-caps color="green-10" />
 					<q-space/>
 					<q-btn label="Save" no-caps color="primary" type="submit"/>
 					<q-btn label="Close" no-caps @click="closeModal"/>

@@ -9,8 +9,8 @@
 							<q-input v-model="user.lastName" label="Last Name" type="text" :rules="[$common.rules.required]"/>
 							<q-input v-model="user.email" label="Email" type="email" :rules="[$common.rules.required]"/>
 							<q-input v-model="user.password" label="Password" type="password" :rules="[$common.rules.required]"/>
-							<q-input v-model="user.address" label="Address" type="text" :rules="[$common.rules.required]"/>
-							<q-input v-model="user.contact" label="Contact No" type="text" :rules="[$common.rules.required]"/>
+							<q-input v-model="user.address" label="Full Address" type="text" :rules="[$common.rules.required]"/>
+							<q-input v-model="user.contact" label="Contact No" type="number" :rules="[$common.rules.required]"/>
 						</q-card-section>
 						<q-card-actions align="right">
 							<q-btn type="submit" label="Sign Up" no-caps/>

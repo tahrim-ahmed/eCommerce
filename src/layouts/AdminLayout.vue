@@ -49,7 +49,7 @@
 					</q-expansion-item>
 					<q-expansion-item label="Reports" icon="folder_open">
 						<q-list>
-							<q-item @click="$root.$emit('showReports')" clickable>
+							<q-item :to="{name: 'orderReport'}" clickable>
 								<q-item-section avatar>
 									<q-icon name="monetization_on"/>
 								</q-item-section>
@@ -59,23 +59,13 @@
 									</q-item-label>
 								</q-item-section>
 							</q-item>
-							<q-item :to="{name: 'productsCategories'}" exact>
+							<q-item :to="{name: 'productReport'}" exact>
 								<q-item-section avatar>
 									<q-icon name="format_list_bulleted"/>
 								</q-item-section>
 								<q-item-section>
 									<q-item-label>
 										Products
-									</q-item-label>
-								</q-item-section>
-							</q-item>
-							<q-item :to="{name: 'productsCategories'}" exact>
-								<q-item-section avatar>
-									<q-icon name="account_circle"/>
-								</q-item-section>
-								<q-item-section>
-									<q-item-label>
-										Customers
 									</q-item-label>
 								</q-item-section>
 							</q-item>
@@ -105,40 +95,6 @@
 							</q-item>
 						</q-list>
 					</q-expansion-item>
-					<q-expansion-item label="Users" icon="account_circle">
-						<q-list>
-							<q-item @click="$root.$emit('showAddProducts')" clickable>
-								<q-item-section avatar>
-									<q-icon name="group"/>
-								</q-item-section>
-								<q-item-section>
-									<q-item-label>
-										Sellers
-									</q-item-label>
-								</q-item-section>
-							</q-item>
-							<q-item :to="{name: 'customer'}" exact>
-								<q-item-section avatar>
-									<q-icon name="group"/>
-								</q-item-section>
-								<q-item-section>
-									<q-item-label>
-										Customers
-									</q-item-label>
-								</q-item-section>
-							</q-item>
-						</q-list>
-					</q-expansion-item>
-					<q-item :to="{name: 'orders'}" exact>
-						<q-item-section avatar>
-							<q-icon name="home"/>
-						</q-item-section>
-						<q-item-section>
-							<q-item-label>
-								Orders
-							</q-item-label>
-						</q-item-section>
-					</q-item>
 				</q-list>
 			</q-scroll-area>
 		</q-drawer>

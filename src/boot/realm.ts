@@ -7,11 +7,14 @@ export default boot(async ({Vue, router, store}) => {
 	let client = Vue.prototype.$realm = new Realm.App({id: 'application-0-ybepu'})
 
 	router.beforeEach((to, from, next) => {
-		store.commit("setCurrentUser", client.currentUser.customData)
-		store.commit("setIsLoggedIn", !client.currentUser.identities.map(value => value.providerType).includes("anon-user"))
+
 		Loading.show()
 		if (!client.currentUser) {
 			client.logIn(Realm.Credentials.anonymous())
+		}
+		else {
+			store.commit("setCurrentUser", client.currentUser.customData)
+			store.commit("setIsLoggedIn", !client.currentUser.identities.map(value => value.providerType).includes("anon-user"))
 		}
 		Vue.prototype.$db = client.currentUser.mongoClient('mongodb-atlas').db('ecommerce')
 		if (to.meta.isAdmin) {

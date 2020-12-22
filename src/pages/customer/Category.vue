@@ -1,18 +1,11 @@
 <template>
-	<q-page padding>
+	<q-page>
 		<q-table grid title="" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
 				 :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width" hide-header>
-			<template v-slot:top-right>
-				<q-input dense debounce="300" v-model="filter" placeholder="Search Item or Category">
-					<template v-slot:append>
-						<q-icon name="search"/>
-					</template>
-				</q-input>
-			</template>
 			<template v-slot:item="{row}">
 				<q-col class="q-pa-xs col-xs-3 col-sm-3 col-md-3">
 					<q-card class="my-card full-height cursor-pointer">
-						<q-img :src="row.image" height="200px" contain @click="$root.$emit('showProductDetails', row._id)"/>
+						<q-img :src="row.image" height="200px" contain @click="showDetails(row)"/>
 						<q-separator/>
 						<q-card-section>
 							<div class="text-h6" style="color: darkblue">{{ row.name }}</div>
@@ -29,34 +22,22 @@
 				</q-col>
 			</template>
 		</q-table>
-		<product-details/>
 	</q-page>
 </template>
 
 <script lang="ts">
-import {Vue, Component} from 'vue-property-decorator';
+import {Component, Vue, Watch} from "vue-property-decorator";
 import {Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
 import {IProduct} from "src/interfaces/IProduct";
-import EditProduct from "components/admin/EditProduct.vue";
-import ProductDetails from "components/customer/ProductDetails.vue";
+import {ICategory} from "src/interfaces/ICategory";
 
-@Component({
-	components: {ProductDetails, EditProduct}
-})
-export default class Index extends Vue {
-	filter: string = '';
-	pagination: any = {
-		sortBy: 'name',
-		descending: false,
-		page: 1,
-		rowsPerPage: 20
-	}
+@Component
+export default class Categories extends Vue {
 
-	numberWithCommas(x: any): any {
-		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
-
+	category: string = null
+	subCategory: ICategory = null
+	rows: any[] = []
 	columns: Array<any> = [
 		{
 			name: 'image',
@@ -116,39 +97,61 @@ export default class Index extends Vue {
 			align: 'left'
 		}
 	]
-	rows: any[] = []
 
-	mounted() {
-		this.loadTable()
+	filter: string = '';
+	pagination: any = {
+		sortBy: 'name',
+		descending: false,
+		page: 1,
+		rowsPerPage: 20
 	}
 
-	created() {
-		this.$root.$on('productsAdded', () => {
+	@Watch('$route', {immediate: true})
+	onChangeRoute() {
+		this.category = this.$route.params.category
+		console.log();
+		this.$db.collection(Collections.productCategories).findOne({
+			name: this.$route.params.subCategory
+		}).then(value => {
+			this.subCategory = value
+			console.log(value);
 			this.loadTable()
 		})
 	}
 
+
+	numberWithCommas(x: any): any {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
 	loadTable() {
 		Loading.show()
-		this.$db.collection(Collections.product).aggregate([{
-			$project: {
-				name: 1,
-				category: 1,
-				price: 1,
-				quantity: 1,
-				image: 1
+		console.log(this.subCategory._id.toString());
+		this.$db.collection(Collections.product).aggregate([
+			{
+				$match: {
+					category: {$eq: this.subCategory._id}
+				}
 			},
-		}, {
-			$lookup: {
-				from: Collections.productCategories,
-				let: {id: '$category'},
-				pipeline: [
-					{$match: {$expr: {$eq: ['$_id', '$$id']}}},
-					{$project: {_id: 1, name: 1}}
-				],
-				as: 'category'
-			}
-		},
+			{
+				$project: {
+					name: 1,
+					category: 1,
+					price: 1,
+					quantity: 1,
+					image: 1
+				},
+			}, {
+				$lookup: {
+					from: Collections.productCategories,
+					let: {id: '$category'},
+					pipeline: [
+						{$match: {$expr: {$eq: ['$_id', '$$id']}}},
+						{$project: {_id: 1, name: 1}}
+					],
+					as: 'category'
+				}
+			},
 			{
 				$project: {
 					name: 1,
@@ -161,6 +164,7 @@ export default class Index extends Vue {
 				}
 			}]).then(async rows => {
 			this.rows = rows
+			console.log(rows);
 			this.rows.forEach((m: IProduct) => {
 				if (m.image) {
 					this.$storage.child(m.image).getDownloadURL().then(v => {
@@ -175,31 +179,12 @@ export default class Index extends Vue {
 		})
 	}
 
-	deleteItem(_id: string) {
-		Loading.show()
-		this.$db.collection(Collections.product).deleteOne({
-			_id
-		}).then(() => {
-			this.$q.notify({
-				message: 'Deleted Successfully!',
-				type: 'positive'
-			})
-		}).finally(() => {
-			Loading.hide()
-			this.loadTable()
-		})
+	showDetails(row: any) {
 	}
-
-	getImage(row: IProduct) {
-		if (row.image) {
-			return this.$storage.child(row.image).getDownloadURL().then(value => value)
-		}
-	}
-
-	productDetails: any = null
 
 }
 </script>
 
-<style lang=scss>
+<style scoped>
+
 </style>

@@ -8,6 +8,12 @@
 				<q-card-section>
 					<q-row>
 						<q-col class="col-12">
+							<q-select v-model="category.parent" label="Parent Category" emit-value option-value="_id" option-label="name" map-options clearable
+									  :options="categories"/>
+						</q-col>
+					</q-row>
+					<q-row>
+						<q-col class="col-12">
 							<q-input v-model="category.name" label="Category Name" :rules="[$common.rules.required]"/>
 						</q-col>
 					</q-row>
@@ -32,23 +38,31 @@ export default class EditCategory extends Vue {
 	show: boolean = false
 	category: ICategory = {
 		name: '',
+		parent: null
 	}
+	categories: ICategory[] = []
 
 	created() {
 		this.$root.$on('showEditCategory', (_id: any) => {
 			Loading.show()
-			this.$db.collection(Collections.productCategories).findOne({
-				_id
-			}).then(value => {
-				this.category= value
-			}).finally(()=>{
-				Loading.hide()
-				this.show = true
+			this.$db.collection(Collections.productCategories).find({
+				$or: [{parent: {$eq: null}}, {parent: {$eq: undefined}}]
+			}).then(ca => {
+				this.categories = ca
+				this.$db.collection(Collections.productCategories).findOne({
+					_id
+				}).then(value => {
+					this.category = value
+				}).finally(() => {
+					Loading.hide()
+					this.show = true
+				})
 			})
+
 		})
 	}
 
-	edit(){
+	edit() {
 		Loading.show()
 		this.$db.collection(Collections.productCategories).updateOne({
 			_id: this.category._id
@@ -59,7 +73,7 @@ export default class EditCategory extends Vue {
 				type: 'positive'
 			})
 			this.$root.$emit('loadProductCategories')
-		}).finally(()=>{
+		}).finally(() => {
 			Loading.hide()
 		})
 	}
