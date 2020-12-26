@@ -45,7 +45,7 @@ import {UserType} from "src/interfaces/util";
 @Component
 export default class Login extends Vue {
 	user: IUser = {
-		email: 'pranhinmiad30@gmail.com',
+		email: 'nusrat@gmail.com',
 		password: '20212021'
 	}
 
@@ -53,6 +53,7 @@ export default class Login extends Vue {
 
 	}
 
+	//this method is for logging in
 	signIn() {
 		Loading.show()
 		let credentials = Realm.Credentials.emailPassword(this.user.email, this.user.password)

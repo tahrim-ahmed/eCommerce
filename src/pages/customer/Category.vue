@@ -126,7 +126,6 @@ export default class Categories extends Vue {
 
 	loadTable() {
 		Loading.show()
-		console.log(this.subCategory._id.toString());
 		this.$db.collection(Collections.product).aggregate([
 			{
 				$match: {
@@ -164,7 +163,6 @@ export default class Categories extends Vue {
 				}
 			}]).then(async rows => {
 			this.rows = rows
-			console.log(rows);
 			this.rows.forEach((m: IProduct) => {
 				if (m.image) {
 					this.$storage.child(m.image).getDownloadURL().then(v => {

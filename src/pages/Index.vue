@@ -53,10 +53,12 @@ export default class Index extends Vue {
 		rowsPerPage: 20
 	}
 
+	//This method is used for displaying numbers with commas. Ex: 1,000
 	numberWithCommas(x: any): any {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
+	//This columns will be shown in the table
 	columns: Array<any> = [
 		{
 			name: 'image',
@@ -118,19 +120,23 @@ export default class Index extends Vue {
 	]
 	rows: any[] = []
 
+	//executed by default
 	mounted() {
 		this.loadTable()
 	}
 
+	//after adding a new product it reloads the table
 	created() {
 		this.$root.$on('productsAdded', () => {
 			this.loadTable()
 		})
 	}
 
+	//this method is used to fetch data of products
 	loadTable() {
 		Loading.show()
 		this.$db.collection(Collections.product).aggregate([{
+			//project means select
 			$project: {
 				name: 1,
 				category: 1,
@@ -139,6 +145,7 @@ export default class Index extends Vue {
 				image: 1
 			},
 		}, {
+			//lookup means join
 			$lookup: {
 				from: Collections.productCategories,
 				let: {id: '$category'},
@@ -150,6 +157,7 @@ export default class Index extends Vue {
 			}
 		},
 			{
+				//project means select
 				$project: {
 					name: 1,
 					image: 1,
@@ -175,28 +183,12 @@ export default class Index extends Vue {
 		})
 	}
 
-	deleteItem(_id: string) {
-		Loading.show()
-		this.$db.collection(Collections.product).deleteOne({
-			_id
-		}).then(() => {
-			this.$q.notify({
-				message: 'Deleted Successfully!',
-				type: 'positive'
-			})
-		}).finally(() => {
-			Loading.hide()
-			this.loadTable()
-		})
-	}
-
+	//this method is used for fetching product images from firebase
 	getImage(row: IProduct) {
 		if (row.image) {
 			return this.$storage.child(row.image).getDownloadURL().then(value => value)
 		}
 	}
-
-	productDetails: any = null
 
 }
 </script>

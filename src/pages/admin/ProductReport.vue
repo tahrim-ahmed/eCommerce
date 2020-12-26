@@ -7,13 +7,15 @@
 			</q-breadcrumbs>
 		</div>
 		<q-table title="" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
-				 :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width" hide-header>
+				 :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width">
 			<template v-slot:top-right>
-				<q-input dense debounce="300" v-model="filter" placeholder="Search">
-					<template v-slot:append>
-						<q-icon name="search"/>
-					</template>
-				</q-input>
+				<q-btn
+					color="primary"
+					icon-right="archive"
+					label="Export to xlsx"
+					no-caps
+					@click="exportTable"
+				/>
 			</template>
 		</q-table>
 		<edit-product/>
@@ -22,10 +24,11 @@
 
 <script lang="ts">
 import {Vue, Component} from 'vue-property-decorator';
-import {Loading} from "quasar";
+import {exportFile, Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
 import {IProduct} from "src/interfaces/IProduct";
 import EditProduct from "components/admin/EditProduct.vue";
+import * as XLSX from "xlsx";
 
 @Component({
 	components: { EditProduct}
@@ -36,7 +39,7 @@ export default class ProductReport extends Vue {
 		sortBy: 'name',
 		descending: false,
 		page: 1,
-		rowsPerPage: 16
+		rowsPerPage: 20
 	}
 
 	numberWithCommas(x: any): any {
@@ -48,7 +51,7 @@ export default class ProductReport extends Vue {
 			name: 'name',
 			field: 'name',
 			required: true,
-			label: 'Name',
+			label: 'Product Name',
 			align: 'left',
 			format: (v: any) => v,
 			sortable: true
@@ -66,7 +69,7 @@ export default class ProductReport extends Vue {
 			name: 'quantity',
 			field: 'quantity',
 			required: true,
-			label: 'Quantity',
+			label: 'Available Quantity',
 			align: 'left',
 			format: (v: any) => v,
 			sortable: true
@@ -140,15 +143,32 @@ export default class ProductReport extends Vue {
 		})
 	}
 
+	exportTable() {
+		let exportRows: any[] = []
+		this.rows.forEach(product => {
+			let item: any = {
+				// @ts-ignore
+				Item_Name: product.name,
+				// @ts-ignore
+				Category_Name: product.category.name,
+				// @ts-ignore
+				Available_Quantity: product.quantity,
+				Unit_Price: product.price,
+				Total_Price: product.quantity * product.price,
+			}
+
+			exportRows.push(item)
+		})
+		let wb = XLSX.utils.book_new()
+		let ws = XLSX.utils.json_to_sheet(exportRows)
+		XLSX.utils.book_append_sheet(wb, ws, 'data')
+		let wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
+		let exp = exportFile('Products.xlsxs',
+			wbout, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+	}
+
 }
 </script>
 
 <style lang=scss>
 </style>
-
-userID
-productID
-itemQuantity
-itemPrice
-paymentStatus
-deliveryStatus

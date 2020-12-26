@@ -6,7 +6,7 @@
 					<q-item v-for="row in props.value" dense :key="Math.random()" style="border-bottom: 1px solid black" class="q-py-sm">
 						<q-item-section>
 							<q-item-label header class="q-pl-none q-py-none">
-								{{row.name}}
+								{{ row.name }}
 							</q-item-label>
 							<q-item-label caption>
 								{{ row.price }} X {{ row.quantity }} = {{ Number(row.price * row.quantity).toFixed(2) }}
@@ -29,15 +29,15 @@ import moment from "moment";
 export default class MyOrder extends Vue {
 
 
+	//This columns will be shown in the table
 	columns: Array<any> = [
 		{
 			name: 'date',
-			field: 'date',
+			field: 'date', //field name on database
 			required: true,
-			label: 'Order Date',
+			label: 'Order Date', //Column name
 			align: 'left',
 			format: (v: any) => {
-				console.log(v);
 				return moment(v).format('DD MMM, Y hh:mmA')
 			},
 			sortable: true
@@ -74,27 +74,27 @@ export default class MyOrder extends Vue {
 			required: true,
 			label: 'Delivery Status',
 			align: 'left',
-			format: (v: any) => v? "Yes" : "No",
+			format: (v: any) => v ? "Yes" : "No",
 			sortable: true
 		}
 	]
 
 	rows: IOrders[] = []
 
+	//this method will be executed when this page opens
 	mounted() {
 		this.loadTable()
 	}
 
+	//this method is for fetching data from database based on userID
 	loadTable() {
 		let customer = this.$store.getters.currentUser.userID
-		console.log(customer);
 		this.$db.collection(Collections.Orders).find({
 			customer: {
 				$eq: customer
 			}
 		}).then(rows => {
 			this.rows = rows
-			console.log(this.rows);
 		})
 	}
 }
