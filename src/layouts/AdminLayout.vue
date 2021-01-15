@@ -55,7 +55,27 @@
 								</q-item-section>
 								<q-item-section>
 									<q-item-label>
-										Sales
+										Total Sales
+									</q-item-label>
+								</q-item-section>
+							</q-item>
+							<q-item :to="{name: 'monthReport'}" clickable>
+								<q-item-section avatar>
+									<q-icon name="monetization_on"/>
+								</q-item-section>
+								<q-item-section>
+									<q-item-label>
+										Monthly Sales
+									</q-item-label>
+								</q-item-section>
+							</q-item>
+							<q-item :to="{name: 'dailyReport'}" clickable>
+								<q-item-section avatar>
+									<q-icon name="monetization_on"/>
+								</q-item-section>
+								<q-item-section>
+									<q-item-label>
+										Daily Sales
 									</q-item-label>
 								</q-item-section>
 							</q-item>

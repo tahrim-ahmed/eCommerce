@@ -40,6 +40,20 @@ export const adminRoutes: RouteConfig[] = [
 		path: 'orderReport',
 		name: 'orderReport',
 		component: () => import('pages/admin/OrderReport.vue')
+	},{
+		meta: {
+			isAdmin: true
+		},
+		path: 'monthReport',
+		name: 'monthReport',
+		component: () => import('pages/admin/MonthReport.vue')
+	},{
+		meta: {
+			isAdmin: true
+		},
+		path: 'dailyReport',
+		name: 'dailyReport',
+		component: () => import('pages/admin/DailyReport.vue')
 	}, {
 		meta: {
 			isAdmin: true

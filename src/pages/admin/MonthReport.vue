@@ -3,10 +3,10 @@
 		<div class="q-pa-md q-gutter-sm">
 			<q-breadcrumbs>
 				<q-breadcrumbs-el label="Home" icon="home"/>
-				<q-breadcrumbs-el label="Received Orders" icon="category"/>
+				<q-breadcrumbs-el label="Monthly Order Report" icon="category"/>
 			</q-breadcrumbs>
 		</div>
-		<q-table title="Received Orders" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
+		<q-table title="Monthly Order Report" :data="rows" :columns="columns" row-key="_id.$oid" color="amber"
 				 :filter="filter" :pagination.sync="pagination" binary-state-sort wrap-cells card-class="full-width">
 			<template v-slot:no-data="{ icon, message, filter }">
 				<div class="full-width row flex-center text-accent q-gutter-sm text-h4 q-my-xl q-py-xl">
@@ -15,11 +15,13 @@
 				</div>
 			</template>
 			<template v-slot:top-right>
-				<q-input dense debounce="300" v-model="filter" placeholder="Search">
-					<template v-slot:append>
-						<q-icon name="search"/>
-					</template>
-				</q-input>
+				<q-btn
+					color="primary"
+					icon-right="archive"
+					label="Export to xlsx"
+					no-caps
+					@click="exportTable"
+				/>
 			</template>
 			<template v-slot:body-cell-items="props">
 				<q-td>
@@ -52,16 +54,18 @@ import {Collections} from "src/interfaces/util";
 import {IOrders} from "src/interfaces/IOrders";
 import Delivery from "components/admin/Delivery.vue";
 import moment from "moment";
+import {exportFile} from 'quasar'
+import * as XLSX from 'xlsx'
 
 @Component({
 	components: {Delivery}
 })
-export default class Dashboard extends Vue {
+export default class OrderReport extends Vue {
 
 	filter: string = '';
 	pagination: any = {
-		sortBy: 'date',
-		descending: true,
+		sortBy: 'name',
+		descending: false,
 		page: 1,
 		rowsPerPage: 10
 	}
@@ -88,21 +92,12 @@ export default class Dashboard extends Vue {
 			sortable: true
 		},
 		{
-			name: 'address',
-			field: 'customer',
-			required: true,
-			label: 'Address',
-			align: 'left',
-			format: (v: any) => v[0].address,
-			sortable: true
-		},
-		{
 			name: 'contact',
 			field: 'customer',
 			required: true,
-			label: 'Contact',
+			label: 'Email',
 			align: 'left',
-			format: (v: any) => v[0].contact,
+			format: (v: any) => v[0].email,
 			sortable: true
 		},
 		{
@@ -140,30 +135,6 @@ export default class Dashboard extends Vue {
 			format: (v: any) => v ? "Yes" : "No",
 			sortable: true
 		},
-		{
-			name: 'received',
-			field: 'isReceived',
-			required: true,
-			label: 'Received Status',
-			align: 'left',
-			format: (v: any) => v ? "Yes" : "No",
-			sortable: true
-		},
-		{
-			name: 'rating',
-			field: 'rating',
-			required: true,
-			label: 'Rating',
-			align: 'left',
-			format: (v: any) => v ? v : "No",
-			sortable: true
-		},
-		{
-			name: 'action',
-			field: '_id',
-			label: 'Action',
-			align: 'left'
-		}
 	]
 	rows: IOrders[] = []
 
@@ -176,13 +147,17 @@ export default class Dashboard extends Vue {
 
 	loadTable() {
 		Loading.show()
-		this.$db.collection(Collections.Orders).aggregate([{
+		this.$db.collection(Collections.Orders).aggregate([
+			{
+
+			},
+			{
 			$lookup: {
 				from: Collections.USERS,
 				let: {id: '$customer'},
 				pipeline: [
 					{$match: {$expr: {$eq: ['$userID', '$$id']}}},
-					{$project: {_id: 1, firstName: 1, lastName: 1, contact: 1, address: 1}}
+					{$project: {_id: 1, firstName: 1, lastName: 1, email: 1, address: 1, contact: 1}}
 				],
 				as: 'customer'
 			}
@@ -193,6 +168,52 @@ export default class Dashboard extends Vue {
 			Loading.hide()
 		})
 	}
+
+	exportTable() {
+		let exportRows: any[] = []
+		let total: number = 0
+		this.rows.forEach(order => {
+			let item: any = {
+				// @ts-ignore
+				Customer: order.customer[0].firstName + ' ' + order.customer[0].lastName,
+				// @ts-ignore
+				Customer_Address: order.customer[0].address,
+				// @ts-ignore
+				Contact_No: order.customer[0].contact,
+				Order_Date: order.date,
+				Total_Quantity: order.quantity,
+				Price: order.price,
+			}
+
+			total += order.price
+
+			order.products.forEach((product, n) => {
+				// @ts-ignore
+				item['Product ' + (n+1)] = product.name
+				item['Quantity ' + (n+1)] = product.quantity
+			})
+			exportRows.push(item)
+		})
+		exportRows.push({
+			// @ts-ignore
+			Customer: 'Total',
+			// @ts-ignore
+			Customer_Address:'',
+			// @ts-ignore
+			Contact_No: '',
+			Order_Date: '',
+			Total_Quantity: '',
+			Price: total,
+		})
+		let wb = XLSX.utils.book_new()
+		let ws = XLSX.utils.json_to_sheet(exportRows)
+		XLSX.utils.book_append_sheet(wb, ws, 'data')
+		let wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'array'})
+		let exp = exportFile('Orders.xlsx',
+			wbout, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+	}
+
+
 }
 </script>
 

@@ -4,12 +4,9 @@
 			<q-toolbar class="row">
 				<q-space/>
 				<q-col class="col-8">
-					<router-link :to="{name: 'home'}">
-						<q-toolbar-title>
-							<q-icon name="shopping_cart"/>
-							eCommerce
-						</q-toolbar-title>
-					</router-link>
+					<a class="col-md col-12" href="/">
+						<q-img height="50px" position="0 0" contain src="images/eLogo.png"/>
+					</a>
 				</q-col>
 				<q-col class="col-grow q-pl-md">
 					<template>
@@ -62,7 +59,7 @@
 													Total:
 												</q-col>
 												<q-col class="col-md-3">
-													{{ $store.getters.cartItems.map((i) => Number(i.price)).reduce((a, b) => a + b, 0) }} BDT
+													{{ getTotal($store.getters.cartItems) }} BDT
 												</q-col>
 											</q-row>
 										</q-item-section>
@@ -215,6 +212,14 @@ export default class MainLayout extends Vue {
 		}).finally(() => {
 			Loading.hide()
 		})
+	}
+
+	getTotal(items:any[]){
+		let total = 0;
+		items.forEach(value => {
+			total+= (value.price * value.quantity)
+		})
+		return total
 	}
 }
 

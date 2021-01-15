@@ -28,7 +28,8 @@
 									<q-td auto-width>
 										<q-input v-model.number="item.quantity" type="number" readonly borderless style="min-width: 120px" :rules="[minOne]">
 											<template v-slot:before>
-												<q-btn color="negative" icon="remove" @click="$store.commit('decrementItemQuantity', item)" dense push/>
+												<q-btn color="negative" icon="remove" @click="$store.commit('decrementItemQuantity', item)" dense push
+												       :disable="Number(item.quantity) < 2"/>
 											</template>
 											<template v-slot:after>
 												<q-btn color="positive" icon="add" @click="$store.commit('incrementItemQuantity', item)" dense push/>
@@ -47,8 +48,8 @@
 									<q-td class="text-center text-bold">{{ $store.getters.cartItems.map((i) => Number(i.quantity)).reduce((a, b) => a + b, 0) }}</q-td>
 									<q-td class="text-right text-bold" colspan="2">
 										{{
-											$store.getters.cartItems.map((i) => Number(i.price)).reduce((a, b) => a + b, 0) *
-											$store.getters.cartItems.map((i) => Number(i.quantity)).reduce((a, b) => a + b, 0)
+										getTotal($store.getters.cartItems)
+
 										}}
 										৳
 									</q-td>
@@ -147,8 +148,10 @@ export default class Checkout extends Vue {
 		let order: IOrders = {
 			customer: this.$store.getters.currentUser.userID,
 			isDelivered: false,
+			isReceived: false,
+			rating: null,
 			paymentStatus: true,
-			price: this.$store.getters.cartItems.map((i: any) => Number(i.price)).reduce((a: number, b: number) => a + b, 0),
+			price: this.getTotal(this.$store.getters.cartItems),
 			products: this.$store.getters.cartItems,
 			quantity: this.$store.getters.cartItems.map((i: any) => Number(i.quantity)).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0),
 			date: new Date(),
@@ -171,6 +174,14 @@ export default class Checkout extends Vue {
 		}).finally(() => {
 			Loading.hide()
 		})
+	}
+
+	getTotal(items:any[]){
+		let total = 0;
+		items.forEach(value => {
+			total+= (value.price * value.quantity)
+		})
+		return total
 	}
 
 }

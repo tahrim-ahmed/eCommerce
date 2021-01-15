@@ -20,9 +20,5 @@ export const customerRoutes: RouteConfig[] = [
 		path: ':category/:subCategory',
 		name: 'category',
 		component: () => import('pages/customer/Category.vue')
-	}, {
-		path: 'payment',
-		name: 'payment',
-		component: () => import('pages/customer/Payment.vue')
 	},
 ]

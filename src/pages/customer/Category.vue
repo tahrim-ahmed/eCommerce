@@ -114,7 +114,6 @@ export default class Categories extends Vue {
 			name: this.$route.params.subCategory
 		}).then(value => {
 			this.subCategory = value
-			console.log(value);
 			this.loadTable()
 		})
 	}
@@ -175,9 +174,6 @@ export default class Categories extends Vue {
 		}).finally(() => {
 			Loading.hide()
 		})
-	}
-
-	showDetails(row: any) {
 	}
 
 }

@@ -11,4 +11,6 @@ export interface IOrders{
 	isDelivered: boolean
 	date: Date
 	transactionID: string
+	isReceived: boolean
+	rating: number
 }
