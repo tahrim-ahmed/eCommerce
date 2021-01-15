@@ -63,8 +63,8 @@ export default class OrderReport extends Vue {
 
 	filter: string = '';
 	pagination: any = {
-		sortBy: 'name',
-		descending: false,
+		sortBy: 'date',
+		descending: true,
 		page: 1,
 		rowsPerPage: 10
 	}
@@ -148,9 +148,11 @@ export default class OrderReport extends Vue {
 		Loading.show()
 		this.$db.collection(Collections.Orders).aggregate([
 			{
-				let: {currentDate : new Date()},
-				$match: {
-
+				$match:{
+					date:{
+						$gte:moment().startOf('day').toDate(),
+						$lte:moment().endOf('day').toDate()
+					}
 				}
 			},
 			{

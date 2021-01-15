@@ -64,8 +64,8 @@ export default class OrderReport extends Vue {
 
 	filter: string = '';
 	pagination: any = {
-		sortBy: 'name',
-		descending: false,
+		sortBy: 'date',
+		descending: true,
 		page: 1,
 		rowsPerPage: 10
 	}
@@ -149,7 +149,12 @@ export default class OrderReport extends Vue {
 		Loading.show()
 		this.$db.collection(Collections.Orders).aggregate([
 			{
-
+				$match:{
+					date:{
+						$gte:moment().startOf('month').toDate(),
+						$lte:moment().endOf('month').toDate()
+					}
+				}
 			},
 			{
 			$lookup: {

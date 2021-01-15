@@ -64,8 +64,8 @@ export default class OrderReport extends Vue {
 
 	filter: string = '';
 	pagination: any = {
-		sortBy: 'name',
-		descending: false,
+		sortBy: 'date',
+		descending: true,
 		page: 1,
 		rowsPerPage: 10
 	}
