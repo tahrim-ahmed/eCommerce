@@ -80,6 +80,7 @@ import {Loading} from "quasar";
 import {Collections} from "src/interfaces/util";
 import {IOrders} from "src/interfaces/IOrders";
 import * as BSON from 'bson'
+import {Int32} from "bson";
 
 @Component
 export default class Checkout extends Vue {
@@ -155,7 +156,8 @@ export default class Checkout extends Vue {
 			products: this.$store.getters.cartItems,
 			quantity: this.$store.getters.cartItems.map((i: any) => Number(i.quantity)).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0),
 			date: new Date(),
-			transactionID
+			transactionID,
+			orderNumber:  transactionID
 		}
 		this.$db.collection(Collections.Orders).insertOne(order).then(value => {
 			order.products.forEach(value1 => {

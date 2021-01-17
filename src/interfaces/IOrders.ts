@@ -3,6 +3,7 @@ import {IProduct} from "src/interfaces/IProduct";
 
 export interface IOrders{
 	_id?: BSON.ObjectID
+	orderNumber: string
 	customer: BSON.ObjectId
 	products: Array<IProduct>
 	quantity: number
@@ -13,4 +14,5 @@ export interface IOrders{
 	transactionID: string
 	isReceived: boolean
 	rating: number
+	notify? : boolean
 }

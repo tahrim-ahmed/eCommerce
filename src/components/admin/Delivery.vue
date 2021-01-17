@@ -38,7 +38,7 @@ export default class Delivery extends Vue {
 	}
 
 	markShipped(){
-		this.$db.collection(Collections.Orders).findOneAndUpdate({_id: this.order._id}, {$set: {isDelivered: true}
+		this.$db.collection(Collections.Orders).findOneAndUpdate({_id: this.order._id}, {$set: {isDelivered: true, notify: true}
 		}).then(()=>{
 			this.$q.notify({
 				message: 'Delivery Successful',

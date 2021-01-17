@@ -11,8 +11,27 @@
 				<q-col class="col-grow q-pl-md">
 					<template>
 						<div class="q-pa-md">
+							<q-btn icon="notifications" color="white" no-caps v-if="$store.getters.isLoggedIn" flat>
+								<q-badge color="negative" floating v-if="data.length" v-html="data.length"/>
+								<q-popup-proxy>
+									<q-card>
+										<q-card-section v-for="notify in data" :key="notify._id">
+											Your order:
+											<q-chip color="info">{{ notify.transactionID }}</q-chip>
+											is out for delivery!
+										</q-card-section>
+										<q-card-actions>
+											<q-btn v-if="data.length" label="Clear" color="negative" dense v-close-popup @click="clearNotify"/>
+											<q-btn label="There is no notification!" flat/>
+										</q-card-actions>
+									</q-card>
+								</q-popup-proxy>
+							</q-btn>
 							<q-btn text-color="black" icon="shopping_cart" color="white" no-caps>
-								<q-badge color="negative" floating v-if="$store.getters.cartItems.length">{{ $store.getters.cartItems.length }}</q-badge>
+								<q-badge color="negative" floating v-if="$store.getters.cartItems.length">{{
+										$store.getters.cartItems.length
+									}}
+								</q-badge>
 								<q-menu persistent>
 									<q-item style="width: 500px">
 										<q-item-section>
@@ -122,6 +141,7 @@ import {Loading} from "quasar";
 import {IProduct} from "src/interfaces/IProduct";
 import Qcol from "components/qcol.vue";
 import {Collections, UserType} from "src/interfaces/util";
+import {IOrders} from "src/interfaces/IOrders";
 
 @Component({
 	components: {Qcol}
@@ -133,8 +153,33 @@ export default class MainLayout extends Vue {
 
 	categories: any[] = []
 
-	onItemClick() {
+	data: IOrders[] = []
 
+	loadData() {
+		let customer = this.$store.getters.currentUser.userID
+		this.$db.collection(Collections.Orders).find({
+			customer: {
+				$eq: customer
+			},
+			notify: {
+				$eq: true
+			}
+		}).then(rows => {
+			console.log(rows);
+			this.data = rows
+		})
+		console.log(this.data);
+	}
+
+	clearNotify() {
+		this.$db.collection(Collections.Orders).updateMany({customer: this.$store.getters.currentUser.userID}, {$set: {notify: false}})
+			.then(() => {
+				this.$q.notify({
+					message: 'Notification Cleared!',
+					type: 'success'
+				})
+				this.loadData()
+			})
 	}
 
 	created() {
@@ -178,17 +223,17 @@ export default class MainLayout extends Vue {
 				})
 			}
 		})
+		this.loadData()
 	}
 
 	initCheckout() {
-		console.log(this.$store.getters.currentUser.userType , UserType.CUSTOMER);
-		if (this.$store.getters.currentUser.userType== UserType.CUSTOMER) {
+		console.log(this.$store.getters.currentUser.userType, UserType.CUSTOMER);
+		if (this.$store.getters.currentUser.userType == UserType.CUSTOMER) {
 			Loading.show()
 			this.$router.push({name: 'checkout'}).finally(() => {
 				Loading.hide()
 			})
-		}
-		else {
+		} else {
 			this.$router.push({name: 'login'}).then(value => {
 				this.$q.notify({
 					message: 'Login Required!',
@@ -214,10 +259,10 @@ export default class MainLayout extends Vue {
 		})
 	}
 
-	getTotal(items:any[]){
+	getTotal(items: any[]) {
 		let total = 0;
 		items.forEach(value => {
-			total+= (value.price * value.quantity)
+			total += (value.price * value.quantity)
 		})
 		return total
 	}

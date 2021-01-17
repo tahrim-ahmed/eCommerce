@@ -118,6 +118,14 @@ export default class MyOrder extends Vue {
 			sortable: true
 		},
 		{
+			name: 'transactionID',
+			field: 'transactionID',
+			required: true,
+			label: 'Order ID',
+			align: 'left',
+			sortable: true
+		},
+		{
 			name: 'quantity',
 			field: 'quantity',
 			required: true,
@@ -180,7 +188,7 @@ export default class MyOrder extends Vue {
 		this.$db.collection(Collections.Orders).find({
 			customer: {
 				$eq: customer
-			}
+			},
 		}).then(rows => {
 			this.rows = rows
 		})
